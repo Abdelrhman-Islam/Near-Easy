@@ -1,0 +1,33 @@
+User:
+- First Name
+- Last Name
+- Email
+- Password
+- Country
+- Age
+- Phone num
+- Gender
+- Role
+
+Planes
+- Name (1:1, 2:5, 6:10)
+- Price
+
+
+Subscriptions
+- User_id
+- Plane_id
+- Start_date
+- Expire_date
+- Consumed (Bool)
+
+Category
+- Name
+- Description
+- Pic
+
+Materials
+- Cat_id
+- Name
+- Description
+- Attachment

@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class OtpCode extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'user_id',
+        'otp_code',
+        'expires_at',
+        'type'
+    ];
+
+    // Cast expires_at to carbon instance automatically
+    protected $casts = [
+        'expires_at' => 'datetime',
+    ];
+
+    // Relationship with User
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+}
