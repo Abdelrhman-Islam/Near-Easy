@@ -9,6 +9,8 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyOtpController;
 use App\Http\Controllers\Auth\ResendOtpController;
 
+use App\Http\Controllers\ContactController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -31,6 +33,8 @@ Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
 Route::post('/reset-password', [NewPasswordController::class, 'store'])
     ->middleware('guest')
     ->name('password.store');
+
+Route::post('/v1/contact', [ContactController::class, 'send']);
 
 // OTP Verification Routes
 Route::post('/verify-otp', VerifyOtpController::class);
