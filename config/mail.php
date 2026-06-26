@@ -97,6 +97,17 @@ return [
             'retry_after' => 60,
         ],
 
+        'support' => [
+            'transport' => 'smtp',
+            'host' => env('MAIL_HOST', 'smtp.hostinger.com'),
+            'port' => env('MAIL_PORT', 465),
+            'encryption' => env('MAIL_ENCRYPTION', 'ssl'),
+            'username' => env('MAIL_SUPPORT_USERNAME'), 
+            'password' => env('MAIL_SUPPORT_PASSWORD'),
+            'timeout' => null,
+            'local_domain' => env('MAIL_EHLO_DOMAIN'),
+        ],
+
     ],
 
     /*

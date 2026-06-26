@@ -15,11 +15,13 @@ class ContactController extends Controller
             'message' => 'required|string'
         ]);
 
-        Mail::raw("You have received a new contact message:\n\n" . 
+         Mail::mailer('support')
+            ->raw("You have received a new contact message:\n\n" . 
                   "Name: {$validated['name']}\n" . 
                   "Email: {$validated['email']}\n\n" . 
                   "Message:\n{$validated['message']}", function ($message) use ($validated) {
-            $message->to('contact@nearandeasy.com') 
+            $message->to('contact@nearandeasy.com')
+                    ->from('support@nearandeasy.com', 'Near&Easy Support')
                     ->subject('New Contact Message from ' . $validated['name'])
                     ->replyTo($validated['email'], $validated['name']);
         });
