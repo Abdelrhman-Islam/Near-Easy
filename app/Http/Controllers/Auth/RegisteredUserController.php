@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\OtpCode;
+use App\Models\Subscription;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use App\Notifications\VerifyEmailWithOtp;
+
 class RegisteredUserController extends Controller
 {
     /**
@@ -27,7 +29,7 @@ class RegisteredUserController extends Controller
             'age' => ['nullable', 'integer', 'min:5', 'max:100'],
             'phone_num' => ['nullable', 'string', 'max:20'],
             'gender' => ['nullable', 'in:male,female'],
-            'role' => ['nullable', 'in:student,instructor'], // Admin registers through a secure route or seeder
+            'role' => ['nullable', 'in:student,instructor'],
         ]);
 
         $user = User::create([
@@ -39,17 +41,26 @@ class RegisteredUserController extends Controller
             'age' => $request->age,
             'phone_num' => $request->phone_num,
             'gender' => $request->gender,
-            'role' => $request->role ?? 'student', // Default to student
-            'status' => 'active', // Default status from migration
+            'role' => $request->role ?? 'student',
+            'status' => 'active',
         ]);
 
-        // event(new Registered($user));
+        // Create one-time initial free session for newly registered students
+        if ($user->role === 'student') {
+            Subscription::create([
+                'user_id' => $user->id,
+                'plan_id' => null,
+                'status' => 'active',
+                'remaining_sessions' => 1,
+                'is_free_tier' => true,
+                'start_date' => now(),
+                'expire_date' => null,
+            ]);
+        }
 
-        // Generate Sanctum Token immediately upon registration
         $token = $user->createToken('auth_token')->plainTextToken;
         $otp = rand(100000, 999999);
 
-        // Create record using the Eloquent Model
         OtpCode::create([
             'type' => 'email_verification',
             'user_id' => $user->id,
@@ -57,8 +68,8 @@ class RegisteredUserController extends Controller
             'expires_at' => now()->addMinutes(10),
         ]);
 
-        // Send the notification
         $user->notify(new VerifyEmailWithOtp($otp));
+
         return response()->json([
             'message' => 'Registration successful',
             'token' => $token,

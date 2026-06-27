@@ -13,6 +13,8 @@ class Subscription extends Model
     protected $fillable = [
         'user_id',
         'plan_id',
+        'status',
+        'is_free_tier',
         'start_date',
         'expire_date',
         'is_active',
@@ -25,5 +27,16 @@ class Subscription extends Model
     public function plan() 
     { 
         return $this->belongsTo(Plan::class); 
+    }
+    //A single subscription may have multiple payment requests (for example, if the first one is rejected).
+    public function paymentRequests()
+    {
+        return $this->hasMany(PaymentRequest::class);
+    }
+
+    // Retrieve the latest payment request for this subscription - "admin control panel"
+    public function latestPaymentRequest()
+    {
+        return $this->hasOne(PaymentRequest::class)->latestOfMany();
     }
 }

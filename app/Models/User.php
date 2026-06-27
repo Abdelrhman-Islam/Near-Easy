@@ -55,4 +55,16 @@ class User extends Authenticatable
     { 
         return $this->hasMany(Subscription::class); 
     }
+
+    // Retrieve current active subscription directly
+    public function activeSubscription()
+    {
+        return $this->hasOne(Subscription::class)->where('status', 'active');
+    }
+
+    // Bring all student payment requests via subscriptions
+    public function paymentRequests()
+    {
+        return $this->hasManyThrough(PaymentRequest::class, Subscription::class);
+    }
 }

@@ -14,10 +14,15 @@ return new class extends Migration
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('plan_id')->constrained()->onDelete('cascade');
-            $table->date('start_date');
-            $table->date('expire_date');
-            $table->boolean('is_active')->default(true);
+            $table->foreignId('plan_id')->nullable()->constrained()->onDelete('cascade'); 
+            
+            $table->enum('status', ['pending', 'active', 'rejected', 'expired'])->default('pending');
+            
+            $table->integer('remaining_sessions')->default(0); // Remaining Sessions
+            $table->boolean('is_free_tier')->default(false); 
+
+            $table->date('start_date')->nullable(); // Not Start untill admin approve 
+            $table->date('expire_date')->nullable();
             $table->timestamps();
         });
     }

@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('plans', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // Example: "Private Sessions", "Small Group"
+            $table->string('name'); // Example: "Private Sessions", "Small Group (2-5)"
             $table->enum('type', ['private', 'group'])->default('private');
-            $table->integer('min_students')->default(1); // 1, 2, 6
-            $table->integer('max_students')->default(1); // 1, 5, 10
+            $table->enum('billing_type', ['per_session', 'monthly'])->default('monthly'); // التعديل الجديد هنا
+            $table->integer('min_students')->default(1);
+            $table->integer('max_students')->default(1);
             $table->decimal('price', 8, 2);
-            $table->integer('sessions_count')->default(1); // عدد الحصص المتاحة في الباقة
+            $table->integer('sessions_count')->default(1);
             $table->timestamps();
         });
     }

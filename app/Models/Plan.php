@@ -13,9 +13,14 @@ class Plan extends Model
     protected $fillable = [
         'name',
         'type',
+        'billing_type',
         'min_students',
         'max_students',
         'price',
         'sessions_count',
     ];
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
 }
